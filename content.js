@@ -17,6 +17,9 @@ console.log("this is msg from content.js");
 	// // });
 // });
 
+
+	
+	
 chrome.runtime.onConnect.addListener(function(port) {
 	
         if(port.name == "channelName"){
@@ -56,3 +59,29 @@ console.log(response);
         }); 
     }
 });
+
+document.onmouseup = function() { 
+		// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+			// console.log("sent from tab.id=", sender.tab.id);
+		// });
+
+// chrome.tabs.getSelected(null, function(tab){
+    // console.log(tab);
+// });
+
+			// chrome.tabs.getCurrent(function(_tabId){
+				// console.log("aaa");
+				// if(_tabId){
+					// var _SELECTION = {};
+					// _SELECTION[tabId] = window.getSelection().toString();
+					// chrome.storage.local.set(_SELECTION, function() {
+						// console.log('Selection saved: ', _SELECTION[tabId]);
+					// });
+				// }
+			// });
+			//console.log(window.getSelection().toString());
+			
+			chrome.runtime.sendMessage({myAction: "textSelected", selectedText: window.getSelection().toString()}, function(response) {
+				console.log(response.farewell);
+			});
+	}

@@ -101,5 +101,16 @@ chrome.tabs.query({currentWindow: true,active: true}, function(tabs){
 		  contexts: ["selection"],
 		  onclick: doSomething
 	});
-
+	
+	chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+		// console.log(sender.tab ?
+					// "from a content script:" + sender.tab.url :
+					// "from the extension");
+		if (request.myAction == "textSelected"){
+		  sendResponse({farewell: "goodbye"});
+		  if (request.selectedText){
+			doSomething({selectionText: request.selectedText});
+		  }
+		}
+	  });
 })
