@@ -152,8 +152,12 @@ chrome.tabs.query({ // Get active tab
         let jsonObj = JSON.parse(jsonText);
 
         let offerId = jsonObj.offerId;
-        document.getElementById("offerId").innerText = "Offer ID: " + (offerId || "Don't know :(");
-
+		if (offerId){
+			document.getElementById("offerId").innerText = "Offer ID: " + offerId;
+		}else{
+			document.getElementById("offerId").innerText = "This page is not supported :)";			
+		}
+		
         let newUrlData = [];
 
         //Here we have just the innerHTML and not DOM structure
@@ -202,10 +206,14 @@ chrome.tabs.query({ // Get active tab
             }
         }
 
-        document.getElementById("btnZip").addEventListener("click", function() {
-            downloadAndZipFiles(offerId, newUrlData.filter(x=>x.isImage).map(x => x.url), "images");
-			downloadAndZipFiles(offerId, newUrlData.filter(x=>!x.isImage).map(x => x.url), "videos");
-        }, false);
+		if (newUrlData.length > 0){
+			document.getElementById("btnZip").style.display = "block";
+			
+			document.getElementById("btnZip").addEventListener("click", function() {
+				downloadAndZipFiles(offerId, newUrlData.filter(x=>x.isImage).map(x => x.url), "images");
+				downloadAndZipFiles(offerId, newUrlData.filter(x=>!x.isImage).map(x => x.url), "videos");
+			}, false);
+		}
 
         //console.log(results[0]);
     });
