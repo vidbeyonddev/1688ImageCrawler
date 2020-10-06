@@ -6,7 +6,8 @@
 		<script src="jszip.min.js"></script>
 		
         <script src="popup.js"></script>
-		<style type="text/css">		
+		<style type="text/css">	
+			#offerId {font-weight: 400; font-size: 14px}
 			img{
 				border: dashed 1px #ccc;
 				padding: 4px;
@@ -16,7 +17,12 @@
 		</style>
     </head>
     <body>
-		<center><button id="btnZip">Zip Images</button></center>
+		<center>
+			<label id="offerId"></label>
+			<br />
+			<br />
+			<button id="btnZip">Zip Images</button>
+		</center>
 		<br />
         <div id="sources"></div>    
     </body>

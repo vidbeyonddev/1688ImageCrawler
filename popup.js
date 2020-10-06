@@ -15,9 +15,17 @@ function modifyDOM() {
 					if (imageItems[i].src && !imageItems[i].src.endsWith('lazyload.png') && !imageItems[i].src.startsWith('data:image') && imageItems[i].src.includes('img/ibank')){
 						data.push(imageItems[i].src);
 					}
-				}			
+				}	
+
+				let videoItems = detailGalleryContent.getElementsByTagName('video');
+				for (let i in videoItems){
+					if (videoItems[i].src){
+						data.push(videoItems[i].src);
+					}
+				}				
 			}			
 		}
+		
 		
 		let listLeadingGallery = document.getElementsByClassName('list-leading')[0];		
 		if (listLeadingGallery){
@@ -37,21 +45,24 @@ function modifyDOM() {
 					data.push(imageItems[i].src);
 				}
 			}
-		}
+		}		
+		
 		
 		console.log(data);
 		
-		return JSON.stringify(data);
+		let offerId = document.querySelectorAll('meta[name="b2c_auction"]')[0].getAttribute("content");
+		
+		return JSON.stringify({offerId: offerId, urls: data});
 		
         //return document.body.innerHTML;
     }
 	
-	function downloadAndZipImgs(urls){
+	function downloadAndZipImgs(offerId, urls){
 		//alert("test");
 		//return;
 		var zip = new JSZip();
 		var count = 0;
-		var zipFilename = "zipFilename.zip";
+		var zipFilename = (offerId || "1688zipData") + ".zip";
 
 		urls.forEach(function(url){
 			console.log(url);
@@ -96,7 +107,13 @@ chrome.tabs.query({ // Get active tab
         code: '(' + modifyDOM + ')();' //argument here is a string but function.toString() returns function's code
     }, (jsonText) => {
 
-		let urls = JSON.parse(jsonText);
+		let jsonObj = JSON.parse(jsonText);
+		
+		let offerId = jsonObj.offerId;
+		document.getElementById("offerId").innerText = "Offer ID: " + (offerId || "Don't know :(");
+		
+		let urls = jsonObj.urls;
+		
 		let newUrls = [];
 		
         //Here we have just the innerHTML and not DOM structure
@@ -122,14 +139,15 @@ chrome.tabs.query({ // Get active tab
 		 }
 		 
 		 var uniqueUrls = newUrls.filter((a, b) => newUrls.indexOf(a) === b);
-console.log(uniqueUrls);
+		 //console.log(uniqueUrls);
+		 
 		 for (var i in uniqueUrls){			 
 			 var img = document.createElement('img');
 			 img.src = uniqueUrls[i];
 			 document.getElementById("sources").appendChild(img);
 		 }
 		
-		document.getElementById("btnZip").addEventListener("click", function(){downloadAndZipImgs(uniqueUrls)}, false);
+		document.getElementById("btnZip").addEventListener("click", function(){downloadAndZipImgs(offerId, uniqueUrls)}, false);
 		
         //console.log(results[0]);
     });
