@@ -170,30 +170,32 @@ chrome.tabs.query({ // Get active tab
 
             if (dot2 > slash) {
                 var newUrl = originalUrl.replace(originalUrl.substring(dot2, dot1), "");
-                newUrlData.push({
-                    url: newUrl,
-                    isImage: jsonObj.urlData[i].isImage
-                });
+				if (newUrlData.map(x=>x.url).indexOf(newUrl) == -1){
+					newUrlData.push({
+						url: newUrl,
+						isImage: jsonObj.urlData[i].isImage
+					});	
+				}                
             } else {
-                newUrlData.push({
-                    url: originalUrl,
-                    isImage: jsonObj.urlData[i].isImage
-                });
+				if (newUrlData.map(x=>x.url).indexOf(originalUrl) == -1){					
+					newUrlData.push({
+						url: originalUrl,
+						isImage: jsonObj.urlData[i].isImage
+					});	
+				}
+                
             }
         }
 
-        var uniqueUrls = newUrlData.filter((a, b) => newUrlData.indexOf(a) === b);
-        //console.log(uniqueUrls);
-
-        for (var i in uniqueUrls) {
-            if (uniqueUrls[i].isImage) {
+        for (var i in newUrlData) {
+            if (newUrlData[i].isImage) {
                 var img = document.createElement('img');
-                img.src = uniqueUrls[i].url;
+                img.src = newUrlData[i].url;
                 document.getElementById("sources").appendChild(img);
             } else {
                 var video = document.createElement('VIDEO');
-                video.src = uniqueUrls[i].url;
-                video.setAttribute("src", uniqueUrls[i].url);
+                video.src = newUrlData[i].url;
+                video.setAttribute("src", newUrlData[i].url);
                 video.setAttribute("controls", "controls");
 
                 document.getElementById("sources").appendChild(video);
@@ -201,8 +203,8 @@ chrome.tabs.query({ // Get active tab
         }
 
         document.getElementById("btnZip").addEventListener("click", function() {
-            downloadAndZipFiles(offerId, uniqueUrls.filter(x=>x.isImage).map(x => x.url), "images");
-			downloadAndZipFiles(offerId, uniqueUrls.filter(x=>!x.isImage).map(x => x.url), "videos");
+            downloadAndZipFiles(offerId, newUrlData.filter(x=>x.isImage).map(x => x.url), "images");
+			downloadAndZipFiles(offerId, newUrlData.filter(x=>!x.isImage).map(x => x.url), "videos");
         }, false);
 
         //console.log(results[0]);
