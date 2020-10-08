@@ -3,70 +3,116 @@ function modifyDOM() {
     //console.log('Tab script:');
     //console.log(document.body);
 
+    let tabUrl = window.location.href;
+    let siteKey = "1688offer";
+
+    if (tabUrl.indexOf("1688.com/pic/") > -1){
+        siteKey = "1688pic";
+    }
+
     let data = [];
-
-    let detailGallery = document.getElementsByClassName('region-detail-gallery')[0];
-    if (detailGallery) {
-        let detailGalleryContent = detailGallery.getElementsByClassName('content')[0];
-        if (detailGalleryContent) {
-            let imageItems = detailGalleryContent.getElementsByTagName('img');
-            for (let i in imageItems) {
-                if (imageItems[i].src && !imageItems[i].src.endsWith('lazyload.png') && !imageItems[i].src.startsWith('data:image') && imageItems[i].src.includes('img/ibank')) {
-                    data.push({
-                        url: imageItems[i].src,
-                        isImage: true
-                    });
-                }
-            }
-
-            let videoItems = detailGalleryContent.getElementsByTagName('video');
-            for (let i in videoItems) {
-                if (videoItems[i].src) {
-                    data.push({
-                        url: videoItems[i].src,
-                        isImage: false
-                    });
-                }
-            }
-        }
-    }
-
-
-    let listLeadingGallery = document.getElementsByClassName('list-leading')[0];
-    if (listLeadingGallery) {
-        let imageItems = listLeadingGallery.getElementsByTagName('img');
-        for (let i in imageItems) {
-            if (imageItems[i].src && !imageItems[i].src.endsWith('lazyload.png') && !imageItems[i].src.startsWith('data:image') && imageItems[i].src.includes('img/ibank')) {
-                data.push({
-                    url: imageItems[i].src,
-                    isImage: true
-                });
-            }
-        }
-    }
-
-    let tableSku = document.getElementsByClassName('table-sku')[0];
-    if (tableSku) {
-        let imageItems = tableSku.getElementsByTagName('img');
-        for (let i in imageItems) {
-            if (imageItems[i].src && !imageItems[i].src.endsWith('lazyload.png') && !imageItems[i].src.startsWith('data:image') && imageItems[i].src.includes('img/ibank')) {
-                data.push({
-                    url: imageItems[i].src,
-                    isImage: true
-                });
-            }
-        }
-    }
-
-
-    console.log(data);
-
-    let b2c_auction_meta = document.querySelectorAll('meta[name="b2c_auction"]')[0];
     let offerId = 0;
 
-    if (b2c_auction_meta) {
-        offerId = document.querySelectorAll('meta[name="b2c_auction"]')[0].getAttribute("content");
+    switch (siteKey) {
+        case "1688offer":
+
+            let b2c_auction_meta = document.querySelectorAll('meta[name="b2c_auction"]')[0];
+
+            if (b2c_auction_meta) {
+                offerId = document.querySelectorAll('meta[name="b2c_auction"]')[0].getAttribute("content");
+            }
+        
+            let detailGallery = document.getElementsByClassName('region-detail-gallery')[0];
+            if (detailGallery) {
+                let detailGalleryContent = detailGallery.getElementsByClassName('content')[0];
+                if (detailGalleryContent) {
+                    let imageItems = detailGalleryContent.getElementsByTagName('img');
+                    for (let i in imageItems) {
+                        if (imageItems[i].src && !imageItems[i].src.endsWith('lazyload.png') && !imageItems[i].src.startsWith('data:image') && imageItems[i].src.includes('img/ibank')) {
+                            data.push({
+                                url: imageItems[i].src,
+                                isImage: true
+                            });
+                        }
+                    }
+        
+                    let videoItems = detailGalleryContent.getElementsByTagName('video');
+                    for (let i in videoItems) {
+                        if (videoItems[i].src) {
+                            data.push({
+                                url: videoItems[i].src,
+                                isImage: false
+                            });
+                        }
+                    }
+                }
+            }
+        
+        
+            let listLeadingGallery = document.getElementsByClassName('list-leading')[0];
+            if (listLeadingGallery) {
+                let imageItems = listLeadingGallery.getElementsByTagName('img');
+                for (let i in imageItems) {
+                    if (imageItems[i].src && !imageItems[i].src.endsWith('lazyload.png') && !imageItems[i].src.startsWith('data:image') && imageItems[i].src.includes('img/ibank')) {
+                        data.push({
+                            url: imageItems[i].src,
+                            isImage: true
+                        });
+                    }
+                }
+            }
+        
+            let tableSku = document.getElementsByClassName('table-sku')[0];
+            if (tableSku) {
+                let imageItems = tableSku.getElementsByTagName('img');
+                for (let i in imageItems) {
+                    if (imageItems[i].src && !imageItems[i].src.endsWith('lazyload.png') && !imageItems[i].src.startsWith('data:image') && imageItems[i].src.includes('img/ibank')) {
+                        data.push({
+                            url: imageItems[i].src,
+                            isImage: true
+                        });
+                    }
+                }
+            }
+
+        break;
+
+        case "1688pic":
+            let firstRegexKey = "detail.1688.com\/pic\/";
+            let secondRegexKey = ".html\?";
+
+            var regExString = new RegExp("(?:"+firstRegexKey+")((.[\\s\\S]*))(?:"+secondRegexKey+")", "ig");
+            var testRE = regExString.exec(tabUrl);
+
+            offerId = testRE[1];
+
+            let tabNav = document.getElementById('dt-bp-tab-nav');
+
+            if (tabNav) {
+                let imageItems = tabNav.getElementsByTagName('img');
+                for (let i in imageItems) {
+                    if (imageItems[i].src && !imageItems[i].src.endsWith('lazyload.png') && !imageItems[i].src.startsWith('data:image') && imageItems[i].src.includes('img/ibank')) {
+                        data.push({
+                            url: imageItems[i].src,
+                            isImage: true
+                        });
+                    }
+                }
+
+                let videoItems = tabNav.getElementsByTagName('video');
+                for (let i in videoItems) {
+                    if (videoItems[i].src) {
+                        data.push({
+                            url: videoItems[i].src,
+                            isImage: false
+                        });
+                    }
+                }                    
+            }
+        break;
     }
+
+    //console.log(data);
 
     return JSON.stringify({
         offerId: offerId,
@@ -76,21 +122,21 @@ function modifyDOM() {
     //return document.body.innerHTML;
 }
 
-function downloadResource(url, filename) {
-  if (!filename) filename = url.split('\\').pop().split('/').pop();
-  fetch(url, {
-      headers: new Headers({
-        'Origin': location.origin
-      }),
-      mode: 'cors'
-    })
-    .then(response => response.blob())
-    .then(blob => {
-      let blobUrl = window.URL.createObjectURL(blob);
-      forceDownload(blobUrl, filename);
-    })
-    .catch(e => console.error(e));
-}
+// function downloadResource(url, filename) {
+//   if (!filename) filename = url.split('\\').pop().split('/').pop();
+//   fetch(url, {
+//       headers: new Headers({
+//         'Origin': location.origin
+//       }),
+//       mode: 'cors'
+//     })
+//     .then(response => response.blob())
+//     .then(blob => {
+//       let blobUrl = window.URL.createObjectURL(blob);
+//       forceDownload(blobUrl, filename);
+//     })
+//     .catch(e => console.error(e));
+// }
 
 function downloadAndZipFiles(offerId, urls, suffix) {
 	
@@ -142,14 +188,15 @@ chrome.tabs.query({ // Get active tab
     active: true,
     currentWindow: true
 }, function(tabs) {
-
+    let url = tabs[0].url;
 
     //We have permission to access the activeTab, so we can call chrome.tabs.executeScript:
-    chrome.tabs.executeScript({
+    chrome.tabs.executeScript(tabs[0].id, {
         code: '(' + modifyDOM + ')();' //argument here is a string but function.toString() returns function's code
     }, (jsonText) => {
 
         let jsonObj = JSON.parse(jsonText);
+        console.log(jsonObj);
 
         let offerId = jsonObj.offerId;
 		if (offerId){
@@ -167,7 +214,12 @@ chrome.tabs.query({ // Get active tab
         for (var i in jsonObj.urlData) {
 
             var originalUrl = jsonObj.urlData[i].url;
-
+            
+            if (originalUrl.endsWith("_.webp"))
+            {
+                originalUrl = originalUrl.replace(new RegExp("[" + "_.webp" + "]+$"), "");
+            }
+            
             var slash = originalUrl.nthLastIndexOf("/", 1);
             var dot1 = originalUrl.nthLastIndexOf(".", 1);
             var dot2 = originalUrl.nthLastIndexOf(".", 2);
