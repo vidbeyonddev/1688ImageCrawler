@@ -1,6 +1,6 @@
 //alert("aa");
 //document.body.style.background = 'yellow';
-console.log("this is msg from content.js");
+//console.log("this is msg from content.js");
 
 // var imgURL = chrome.runtime.getURL("images/myimage.jpg");
   // //document.getElementById("body").src = imgURL;
@@ -21,12 +21,13 @@ console.log("this is msg from content.js");
 	
 	
 chrome.runtime.onConnect.addListener(function(port) {
-	
-        if(port.name == "channelName"){
-        port.onMessage.addListener(function(response) {
-console.log(response);
+	//console.log(port);
 
-            if(response.url == window.location.href){				
+	if(port.name == "channelName"){
+		port.onMessage.addListener(function(response) {
+			//console.log(response);
+
+			if(response.url == window.location.href){				
 				
 				var popup = document.querySelector('#myPopup');
 				if (!popup) {
@@ -53,35 +54,58 @@ console.log(response);
 					document.body.appendChild(popup);
 				}
 				
-			  $(popup).text(response.result);
+			$(popup).text(response.result);
 				$(popup).hide().show().delay(5000).fadeOut(400);
-            }
-        }); 
-    }
+			}
+		}); 
+	}
 });
 
+function getSelectedText() {    // this code is within the iframe
+	//console.log("huhuu");
+    if (window.getSelection) {
+        return window.getSelection();
+    }
+    else if (document.selection) {
+        return document.selection.createRange().text;
+    }
+    return '';
+}
+
 document.onmouseup = function() { 
-		// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-			// console.log("sent from tab.id=", sender.tab.id);
-		// });
+	// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+		// console.log("sent from tab.id=", sender.tab.id);
+	// });
 
-// chrome.tabs.getSelected(null, function(tab){
-    // console.log(tab);
-// });
+	// chrome.tabs.getSelected(null, function(tab){
+		// console.log(tab);
+	// });
 
-			// chrome.tabs.getCurrent(function(_tabId){
-				// console.log("aaa");
-				// if(_tabId){
-					// var _SELECTION = {};
-					// _SELECTION[tabId] = window.getSelection().toString();
-					// chrome.storage.local.set(_SELECTION, function() {
-						// console.log('Selection saved: ', _SELECTION[tabId]);
-					// });
-				// }
+	// chrome.tabs.getCurrent(function(_tabId){
+		// console.log("aaa");
+		// if(_tabId){
+			// var _SELECTION = {};
+			// _SELECTION[tabId] = window.getSelection().toString();
+			// chrome.storage.local.set(_SELECTION, function() {
+				// console.log('Selection saved: ', _SELECTION[tabId]);
 			// });
-			//console.log(window.getSelection().toString());
-			
-			chrome.runtime.sendMessage({myAction: "textSelected", selectedText: window.getSelection().toString()}, function(response) {
-				console.log(response.farewell);
-			});
-	}
+		// }
+	// });
+	
+	//console.log(window.getSelection().toString());
+	
+	chrome.runtime.sendMessage({method: "sendSelectedText", msg: getSelectedText().toString()}, function(response) {
+		//console.log(response.abc);
+	});
+
+	chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
+		//console.log(response.farewell);
+	});
+	
+}
+
+
+
+
+
+

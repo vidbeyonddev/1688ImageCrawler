@@ -233,3 +233,17 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
 	// });
 });
 
+// document.addEventListener("DOMContentLoaded", () => {
+//     chrome.extension.sendMessage({action: "ping"}, function(resp) {
+//         console.log(JSON.stringify(resp));
+//     });
+// });
+
+
+// detect selected text
+// chrome.tabs.executeScript( {
+//     code: "window.getSelection().toString();"
+// }, function(selection) {
+// 	console.log(selection);
+//     alert(selection[0]);
+// });
