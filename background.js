@@ -115,10 +115,29 @@ $(document).ready(function(){
 		contexts: ["selection"]
 	});
 
+	chrome.contextMenus.create({
+		id: "gen-qr-code-command",
+		title: "Generate QR Code",
+		contexts: ["selection"]
+	});
+
+
 
 	chrome.contextMenus.onClicked.addListener(function(info, tab) {
 		if (info.menuItemId == "convert-te-vnd-command") {
 			doSomething(info, tab);
+		}
+	});
+
+	chrome.contextMenus.onClicked.addListener(function(info, tab) {
+		if (info.menuItemId == "gen-qr-code-command") {
+			chrome.tabs.query({currentWindow: true, active: true}, function(tabs){ 
+				var port = chrome.tabs.connect(tabs[0].id, {name: "genQRCodeChannel"});
+		
+				if (typeof port !== 'undefined'){
+					port.postMessage({url:tabs[0].url, result: info.selectionText});
+				}				
+			});		
 		}
 	});
 
